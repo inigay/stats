@@ -63,6 +63,10 @@
 		  }
 		];
 
+		$http.get('http://intranet.summit-broadband.com/corporate/kpid1/stats/stats.php').success(function(data){
+			alert('we have connected successfully! here is the data: ' + data);
+		})
+
 
 		$scope.jobHere = function(jobId,jobDate){
 			
