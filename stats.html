@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+	
+</head>
+<body>
+
+<div ng-app="stats" ng-controller="myCont">
+ 	<table border="1">
+ 		<tr>
+ 			<th>actions</th>
+ 			<th ng-repeat="date in dates track by $index">{{date | date: 'MM/dd/yyyy'}}</th>
+ 		</tr>
+ 		<tr ng-repeat="job in jobs">
+ 			<td jobId = "{{job.id}}">{{job.name}}</td>
+ 			<td ng-repeat="date in dates track by $index">{{jobHere(job.id,date)}}</td>
+ 		</tr>
+ 	</table>
+</div>
+
+
+<script type="text/javascript">
+
+	app = angular.module('stats',[]);
+	app.controller('myCont',function($scope, $http){
+		//this part is a return date for example today
+		var today = new Date();
+		today.setHours(0,0,0,0);
+
+		$scope.dates = [];
+		for(var i = 0; i < 7; i++){
+			$scope.dates.push(today.getTime() - i * 86400000);	
+		}
+		
+		// now dates are done we need job names
+		$scope.jobs = [{id:1,name: 'Install Jobs'},{id:2, name:'Service Jobs'},{id:3, name:'Total Jobs'}];
+
+		//Below is what you get from GET request of stats.php
+		$scope.headers = [
+		  {
+		    pkid: "1",
+		    stat_name: "Install Jobs",
+		    statID: "1",
+		    statValue: "34",
+		    statDate: "2015-06-30 00:00:00"
+		  },
+		  {
+		    pkid: "2",
+		    stat_name: "Service Jobs",
+		    statID: "2",
+		    statValue: "62",
+		    statDate: "2015-06-29 00:00:00"
+		  },
+		  {
+		    pkid: "3",
+		    stat_name: "Total Jobs",
+		    statID: "3",
+		    statValue: "79",
+		    statDate: "2015-08-05 00:00:00"
+		  }
+		];
+
+
+		$scope.jobHere = function(jobId,jobDate){
+			
+			for(var i= 0; i < $scope.headers.length; i++){
+				if($scope.headers[i].pkid == jobId){
+
+					var d = new Date($scope.headers[i].statDate);
+
+					if(jobDate == d.getTime()){
+						return $scope.headers[i].statValue;
+					}
+				}
+			}
+
+			return '';
+		}
+
+	});//End of Controller
+	
+
+	
+
+	</script>
+</body>
+
+</html>
